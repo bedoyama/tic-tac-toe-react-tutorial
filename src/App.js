@@ -9,7 +9,7 @@ function Square({value, onSquareClick, className}) {
     </button>);
 }
 
-function Board({xIsNext, squares, onPlay}) {
+function Board({xIsNext, squares, onPlay, draw}) {
     function handleClick(i) {
         if (squares[i] || calculateWinner(squares)) {
             return;
@@ -28,6 +28,8 @@ function Board({xIsNext, squares, onPlay}) {
     let status;
     if (winner) {
         status = "Winner: " + winner.face;
+    } else if (draw) {
+        status = "It's a draw!";
     } else {
         status = "Next player: " + (xIsNext ? "X" : "O");
     }
@@ -64,6 +66,7 @@ export default function Game() {
     const [moveOrderAsc, setMoveOrderAsc] = useState(true);
     const xIsNext = (currentMove % 2) === 0;
     const currentSquares = history[currentMove];
+    const draw = !calculateWinner(currentSquares) && currentMove === 9;
 
     function handlePlay(nextSquares) {
         const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -110,6 +113,7 @@ export default function Game() {
                     xIsNext={xIsNext}
                     squares={currentSquares}
                     onPlay={handlePlay}
+                    draw={draw}
                 />
             </div>
             <div className="game-info">
