@@ -21,7 +21,7 @@ function Board({xIsNext, squares, onPlay, draw}) {
         } else {
             nextSquares[i] = "O";
         }
-        onPlay(nextSquares);
+        onPlay(nextSquares, i);
     }
 
     const winner = calculateWinner(squares);
@@ -62,15 +62,18 @@ function Board({xIsNext, squares, onPlay, draw}) {
 
 export default function Game() {
     const [history, setHistory] = useState([Array(9).fill(null)]);
+    const [playedSquares, setPlayedSquares] = useState([]);
     const [currentMove, setCurrentMove] = useState(0);
     const [moveOrderAsc, setMoveOrderAsc] = useState(true);
     const xIsNext = (currentMove % 2) === 0;
     const currentSquares = history[currentMove];
     const draw = !calculateWinner(currentSquares) && currentMove === 9;
 
-    function handlePlay(nextSquares) {
+    function handlePlay(nextSquares, playIndex) {
         const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
         setHistory(nextHistory);
+        const nextPlayedSquares = [...playedSquares.slice(0, currentMove + 1), playIndex];
+        setPlayedSquares(nextPlayedSquares);
         setCurrentMove(nextHistory.length - 1);
     }
 
@@ -90,6 +93,11 @@ export default function Game() {
             description = 'Go to game start';
         } else {
             description = 'Go to move #' + move;
+        }
+
+        if (move > 0) {
+            const {row, col} = calculateRowCol(playedSquares[move]);
+            description += ` (row: ${row}, col: ${col})`;
         }
 
         return (
@@ -139,4 +147,10 @@ function calculateWinner(squares) {
         }
     }
     return null;
+}
+
+function calculateRowCol(index) {
+    const row = Math.floor(index / 3) + 1;
+    const col = (index % 3) + 1;
+    return {row, col};
 }
