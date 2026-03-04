@@ -92,16 +92,12 @@ export default function Game() {
             description = 'Go to move #' + move;
         }
 
-        let element;
-        if (move === moves.length - 1) {
-            element = description;
-        } else {
-            element = <button onClick={() => jumpTo(move)}>{description}</button>;
-        }
-
         return (
             <li key={move}>
-                {element}
+                {move === moves.length - 1 ? (
+                    description) : (
+                    <button onClick={() => jumpTo(move)}>{description}</button>
+                )}
             </li>
         );
     });
